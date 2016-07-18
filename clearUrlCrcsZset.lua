@@ -7,6 +7,8 @@ local function clearOne(key)
   local hylandaId = string.sub(key, 5, 18)
   redis.log(redis.LOG_NOTICE, hylandaId)
   local urlCrcs = redis.call('zrangebyscore', key, '-inf', timestamp)
+  if next(urlCrcs) == nil then return end --空table的话直接返回
+
   local values = redis.call(
     'hmget', 'dpt:'..hylandaId..':goOnUpdateCount', unpack(urlCrcs)
   )
@@ -16,7 +18,7 @@ local function clearOne(key)
       reducedCountChange = reducedCountChange + tonumber(values[i])
     end
   end
-  redis.log(redis.LOG_NOTICE, reducedCountChange)
+  redis.log(redis.LOG_NOTICE, hylandaId, reducedCountChange)
   redis.call('hincrby', 'dpt:reducedCount', hylandaId, reducedCountChange)
   redis.call('hdel', 'dpt:'..hylandaId..':goOnUpdateCount', unpack(urlCrcs))
   redis.call('zremrangebyscore', key, '-inf', timestamp)
