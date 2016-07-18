@@ -1,6 +1,7 @@
 redis.replicate_commands() --3.2版本之后才新增的东西
 
-local timestamp = tonumber(redis.call('time')[1]) - 7 * 86400
+local now = redis.call('time')[1]
+local timestamp = tonumber(now) - 7 * 86400
 redis.log(redis.LOG_NOTICE, 'timestamp:', timestamp)
 
 local function clearOne(key)
@@ -37,3 +38,5 @@ repeat
     clearOne(key)
   end
 until (cursor == '0')
+
+return 'finished '..now..', 7 days ago '..timestamp
