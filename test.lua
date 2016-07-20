@@ -1,12 +1,38 @@
-
-function clearOne(hylandaId)
-  print(hylandaId)
+local count = 10;
+local function clearOneByLimit(key)
+  count = count - 1
+--  redis.log(redis.LOG_NOTICE, count)
+  print(count)
+  if count > 0 then
+    return true
+  else
+    return
+  end
 end
 
-local totalChange = 0
+--print(clearOneByLimit())
 
-totalChange += (false or 1)
-print(totalChange)
+
+local function clearOne(key)
+  while clearOneByLimit(key) do
+    print();
+  end
+end
+
+if {} then
+  print('hhh')
+end
+
+--clearOne('xxx')
+
+--function clearOne(hylandaId)
+--  print(hylandaId)
+--end
+--
+--local totalChange = 0
+--
+--totalChange += (false or 1)
+--print(totalChange)
 
 --clearOne('xxxxxxxxxxxx')
 
