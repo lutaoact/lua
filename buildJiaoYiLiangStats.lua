@@ -14,29 +14,23 @@ local function saveFirst()
 end
 
 if firstTime then
-  redis.log(redis.LOG_NOTICE, 'firstTime:', firstTime)
   firstTime = tonumber(firstTime)
   curTime   = tonumber(curTime)
   local diff = curTime - firstTime
-  redis.log(redis.LOG_NOTICE, 'diff:', diff)
   if diff > 6 * 3600 then
-    redis.log(redis.LOG_NOTICE, 'another day')
+    redis.log(redis.LOG_NOTICE, 'another day', code, curTime, diff)
     redis.call('del', timeBits, stats)
 
     saveFirst()
   else
-    redis.log(redis.LOG_NOTICE, 'same day')
     local bit = redis.call('setbit', timeBits, diff, 1)
-    redis.log(redis.LOG_NOTICE, 'bit:', bit)
-    redis.log(redis.LOG_NOTICE, 'bit:', type(bit))
     if bit == 0 then
-      redis.log(redis.LOG_NOTICE, 'in bit == 0')
       redis.call('zincrby', stats, quantity, price)
     end
   end
 else
-  redis.log(redis.LOG_NOTICE, type(firstTime), 'no firstTime')
+  redis.log(redis.LOG_NOTICE, 'no firstTime', code, curTime)
   saveFirst()
 end
 
-return {curTime, price, quantity}
+return ''
