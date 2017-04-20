@@ -8,6 +8,8 @@ local code, curTime, price, quantity = unpack(ARGV)
 local firstTime = redis.call('hget', codeFirstTime, code)
 
 local function saveFirst()
+  redis.call('del', timeBits, stats)
+
   redis.call('hset', codeFirstTime, code, curTime)
   redis.call('setbit', timeBits, 0, 1)
   redis.call('zadd', stats, quantity, price)
@@ -19,7 +21,6 @@ if firstTime then
   local diff = curTime - firstTime
   if diff > 6 * 3600 then
     redis.log(redis.LOG_NOTICE, 'another day', code, curTime, diff)
-    redis.call('del', timeBits, stats)
 
     saveFirst()
   else
