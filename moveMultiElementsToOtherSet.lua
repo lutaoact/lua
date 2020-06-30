@@ -1,3 +1,5 @@
+-- \redis-cli -h "${REDIS_ADDR//:6379}" -n "$REDIS_DB" --eval moveMultiElementsToOtherSet.lua
+
 local old_key = 'archive:prefixes:deleting'
 local count = 50000
 
